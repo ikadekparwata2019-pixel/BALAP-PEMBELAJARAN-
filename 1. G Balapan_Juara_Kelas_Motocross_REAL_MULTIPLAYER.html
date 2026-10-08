@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Balapan Juara Kelas — Motocross</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Arial,Helvetica,sans-serif;background:#07111c;color:#fff}
+:root{--gold:#ffd447;--green:#42d889;--red:#ff6070;--blue:#35a8ff}
+header{background:linear-gradient(135deg,#10263c,#07131f);padding:16px 20px;border-bottom:2px solid #294966;display:flex;align-items:center;justify-content:space-between;gap:15px;position:sticky;top:0;z-index:10}
+h1{margin:0;font-size:clamp(25px,4vw,42px)}header p{margin:5px 0 0;color:#b9cee2;font-weight:bold}
+nav{display:flex;gap:7px;flex-wrap:wrap}button{border:0;border-radius:10px;padding:10px 14px;font-weight:800;cursor:pointer}nav button{background:#203a55;color:#fff}nav button.active,.gold{background:linear-gradient(135deg,#ffe36b,#ffad1c);color:#111}
+main{max-width:1500px;margin:auto;padding:16px}.screen{display:none}.screen.active{display:block}
+.layout{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(280px,.8fr);gap:16px}.panel{background:#102237;border:1px solid #294761;border-radius:18px;padding:15px;box-shadow:0 12px 35px #0005}
+.panel h2{margin:0 0 12px}.arena{position:relative;min-height:700px;border-radius:18px;overflow:hidden;border:5px solid #3c5a2f;background:
+linear-gradient(to bottom,#76a9c5 0 27%,#88a65c 27% 40%,#674f35 40% 100%)}
+.sky{position:absolute;inset:0;pointer-events:none}.cloud{position:absolute;font-size:44px;opacity:.65}.mountain{position:absolute;font-size:100px;opacity:.45;bottom:61%}
+.tree{position:absolute;font-size:48px;filter:drop-shadow(0 6px 2px #0005)}.house{position:absolute;font-size:57px;filter:drop-shadow(0 6px 2px #0005)}
+.lane{position:relative;height:105px;margin:8px 16px;border-radius:15px;background:linear-gradient(#5d4b38,#493725);border:2px solid #8d6b47;overflow:hidden;z-index:2}
+.lane:before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(130deg,#fff0 0 15px,#fff2 15px 18px);opacity:.4}
+.label{position:absolute;left:10px;top:8px;background:#091522dd;padding:5px 8px;border-radius:7px;font-size:12px;font-weight:900;z-index:5}
+.flag{position:absolute;left:3px;top:35px;font-size:28px;z-index:4}.finish{position:absolute;right:5px;top:0;bottom:0;width:20px;background:repeating-linear-gradient(45deg,#fff 0 8px,#111 8px 16px);z-index:4}
+.hazard{position:absolute;top:39px;font-size:27px;z-index:3}.mud{position:absolute;top:0;bottom:0;width:80px;background:#51321c99;border-radius:50%;z-index:1}
+.ramp{position:absolute;top:24px;font-size:46px;z-index:3}
+.bike{position:absolute;top:38px;left:0%;width:94px;height:27px;background:var(--bike);border-radius:9px 27px 8px 13px;z-index:6;transition:left .75s cubic-bezier(.15,.85,.2,1);box-shadow:0 8px 12px #0008;transform:skew(-8deg)}
+.wheel{position:absolute;width:24px;height:24px;border:5px solid #111;background:#777;border-radius:50%;bottom:-13px}.w1{left:5px}.w2{right:5px}
+.seat{position:absolute;left:23px;top:-6px;width:34px;height:6px;background:#eee;border-radius:8px}.front{position:absolute;right:13px;top:-12px;width:4px;height:25px;background:#111;transform:rotate(24deg)}
+.number{position:absolute;left:42px;top:3px;font-weight:1000;color:#111}.rider{position:absolute;left:32px;top:-25px;font-size:25px}.dust{position:absolute;left:-25px;top:-2px;font-size:25px;display:none}.moving .dust{display:block;animation:dust .55s infinite alternate}@keyframes dust{to{transform:translateX(-18px);opacity:.2}}
+.countdown{position:absolute;inset:0;background:#0008;display:none;align-items:center;justify-content:center;z-index:8;font-size:110px;font-weight:1000;color:var(--gold);text-shadow:0 7px 20px #000}.countdown.show{display:flex}
+.board table{width:100%;border-collapse:collapse}.board th,.board td{text-align:left;padding:9px 5px;border-bottom:1px solid #294761}.pts{color:var(--gold);font-weight:900}
+.controls{display:grid;grid-template-columns:repeat(5,1fr);gap:7px;margin-top:12px}.teambtn{background:#1c3751;color:#fff}.teambtn.sel{outline:3px solid var(--gold)}
+.question{margin-top:12px;background:#091726;border-radius:15px;padding:15px;border:1px solid #294761}.qtitle{font-size:20px;font-weight:900;line-height:1.35}.options{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}.option{background:#1b3853;color:#fff;text-align:left}.option:hover{background:#285271}.timer{float:right;color:var(--gold);font-size:22px}
+input,textarea,select{width:100%;background:#081523;color:#fff;border:1px solid #35536d;border-radius:9px;padding:10px}textarea{min-height:100px}.form{display:grid;grid-template-columns:1fr 1fr;gap:11px}.full{grid-column:1/-1}.field label{display:block;font-weight:800;margin-bottom:5px}.list{display:grid;gap:8px;margin-top:12px}.card{background:#0a1725;border:1px solid #2b4760;border-radius:11px;padding:10px;display:flex;justify-content:space-between;gap:8px}
+.badge{display:inline-block;background:#294760;border-radius:7px;padding:4px 7px;font-size:11px;font-weight:900}.good{color:var(--green)}.bad{color:var(--red)}.small{color:#aac1d7;font-size:13px}
+.modal{position:fixed;inset:0;background:#000b;z-index:30;display:none;align-items:center;justify-content:center;padding:20px}.modal.show{display:flex}.modalbox{width:min(650px,100%);background:#11263b;border:2px solid #456581;border-radius:20px;padding:25px;text-align:center}.modalbox h2{font-size:36px;margin:5px}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#163049;border:1px solid #486983;padding:12px 18px;border-radius:10px;display:none;z-index:50}
+.toast.show{display:block}
+@media(max-width:950px){.layout{grid-template-columns:1fr}.controls{grid-template-columns:repeat(2,1fr)}.form{grid-template-columns:1fr}.full{grid-column:auto}.arena{min-height:650px}.options{grid-template-columns:1fr}}
+</style>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+</head>
+<body>
+<header>
+<div><h1>🏁 BALAPAN JUARA KELAS</h1><p>🏍️ MOTOCROSS EDITION — Jawab Benar • Gas Motor • Jadi Juara!</p></div>
+<nav>
+<button class="active" onclick="show('race',this)">🏍️ Arena</button><button onclick="openMultiplayer()">🌐 Multiplayer</button><button onclick="shareGame()">📱 Bagikan / QR</button>
+<button onclick="show('bank',this)">📝 Bank Soal</button>
+<button onclick="show('settings',this)">⚙️ Pengaturan</button>
+</nav>
+</header>
+
+<main>
+<section id="race" class="screen active">
+<div class="layout">
+<div class="panel">
+<h2>🏍️ Arena Motocross</h2>
+<div class="arena" id="arena">
+<div class="sky">
+<span class="cloud" style="left:7%;top:5%">☁️</span><span class="cloud" style="left:70%;top:7%">☁️</span>
+<span class="mountain" style="left:2%">⛰️</span><span class="mountain" style="left:75%">🏔️</span>
+<span class="tree" style="left:1%;top:20%">🌲</span><span class="tree" style="left:10%;top:23%">🌴</span>
+<span class="tree" style="left:87%;top:20%">🌳</span><span class="tree" style="left:94%;top:30%">🌲</span>
+<span class="house" style="left:30%;top:18%">🏠</span><span class="house" style="left:58%;top:19%">🏡</span>
+</div>
+<div class="countdown" id="countdown">3</div>
+<div id="lanes"></div>
+</div>
+<div class="controls" id="controls"></div>
+<div class="question" id="question"><span class="small">Pilih kelompok lalu tekan MULAI RONDE.</span></div>
+</div>
+
+<div class="panel board">
+<h2>🏆 PAPAN PERINGKAT</h2>
+<table><thead><tr><th>#</th><th>Kelompok</th><th>Langkah</th><th>Poin</th></tr></thead><tbody id="board"></tbody></table>
+<p class="small">Ronde</p><h2 id="round">0 / 12</h2>
+<p class="small">Checkpoint yang dilewati</p><h2 id="checkpoint">0 / 5</h2>
+<button class="gold" style="width:100%;margin-top:8px" onclick="startRound()">🏁 MULAI RONDE</button>
+<button style="width:100%;margin-top:8px;background:#6b2735;color:white" onclick="resetGame()">↻ RESET GAME</button>
+</div>
+</div>
+</section>
+
+<section id="bank" class="screen">
+<div class="layout">
+<div class="panel"><h2>📝 Tambah Soal</h2>
+<div class="form">
+<div class="field"><label>Jenis</label><select id="type" onchange="typeChange()"><option value="pg">Pilihan Ganda</option><option value="essay">Esai</option></select></div>
+<div class="field"><label>Nilai Maksimal</label><input id="score" type="number" value="10"></div>
+<div class="field full"><label>Pertanyaan</label><textarea id="text"></textarea></div>
+<div id="pg" class="field full">
+<label>A</label><input id="a"><label>B</label><input id="b"><label>C</label><input id="c"><label>D</label><input id="d">
+<label>Jawaban benar</label><select id="correct"><option>A</option><option>B</option><option>C</option><option>D</option></select>
+</div>
+<div id="essay" class="field full" style="display:none"><label>Kunci/pedoman jawaban</label><textarea id="key"></textarea></div>
+<div class="field"><label>Hadiah langkah</label><input id="steps" type="number" value="2"></div>
+<div class="field"><label>Jenis checkpoint</label><select id="kind"><option value="normal">Soal biasa</option><option value="bonus">⚡ Bonus</option><option value="challenge">🎯 Tantangan</option></select></div>
+</div>
+<button class="gold" style="margin-top:12px" onclick="addQuestion()">💾 SIMPAN SOAL</button>
+</div>
+<div class="panel"><h2>📚 Bank Soal</h2><div class="small">Soal tersimpan di browser.</div><div class="list" id="qList"></div></div>
+</div>
+</section>
+
+<section id="settings" class="screen">
+<div class="layout"><div class="panel"><h2>⚙️ Pengaturan</h2><div class="form" id="settingsForm"></div><button class="gold" style="margin-top:12px" onclick="saveSettings()">💾 SIMPAN</button></div>
+<div class="panel"><h2>🎮 Cara Bermain</h2><ol class="small" style="line-height:1.9"><li>Pilih kelompok.</li><li>Tekan mulai ronde.</li><li>Jawab soal.</li><li>Jawaban benar membuat motor melaju.</li><li>Soal bonus memberi langkah tambahan.</li><li>Motor pertama mencapai finish menjadi juara.</li></ol></div></div>
+</section>
+</main>
+
+
+
+<div class="modal" id="multiModal">
+<div class="modalbox">
+<div style="font-size:45px">🌐🏍️</div>
+<h2>Multiplayer Motocross</h2>
+<div id="multiStart">
+<p class="small">Guru membuat ROOM. Siswa masuk menggunakan kode ROOM atau QR.</p>
+<button class="gold" onclick="createRoom()">👨‍🏫 BUAT ROOM GURU</button>
+<button onclick="showJoin()">📱 MASUK SEBAGAI SISWA</button>
+</div>
+<div id="teacherRoom" style="display:none">
+<p>ROOM GURU</p><div id="roomCode" style="font-size:42px;font-weight:1000;color:#ffd447;letter-spacing:5px">------</div>
+<p class="small">Siswa scan QR atau masukkan kode ROOM.</p>
+<input id="roomLink" readonly style="margin:8px 0;font-size:12px"><button onclick="copyRoomLink()">📋 Salin Link Room</button>
+<img id="roomQR" style="width:210px;height:210px;background:white;padding:8px;border-radius:12px">
+<div id="connectedStudents" style="margin:10px 0"></div>
+<button class="gold" onclick="closeMulti()">Tutup</button><button style="margin-left:6px;background:#6b2735;color:#fff" onclick="leaveRoom()">⛔ Akhiri Room</button>
+</div>
+<div id="studentJoin" style="display:none">
+<p class="small">Masukkan kode ROOM dari guru.</p>
+<input id="joinCode" maxlength="6" placeholder="ABC123" style="text-align:center;text-transform:uppercase;font-size:25px">
+<select id="joinTeam" style="margin-top:10px"><option value="0">🏍️ Kelompok 1</option><option value="1">🏍️ Kelompok 2</option><option value="2">🏍️ Kelompok 3</option><option value="3">🏍️ Kelompok 4</option><option value="4">🏍️ Kelompok 5</option></select>
+<input id="studentName" placeholder="Nama siswa / kelompok" style="margin-top:10px">
+<button class="gold" style="margin-top:10px" onclick="joinRoom()">🚀 GABUNG ROOM</button>
+<p id="joinStatus" class="small"></p>
+</div>
+<div id="studentRoom" style="display:none">
+<h3 id="studentWelcome"></h3><p class="small">Tunggu guru memberikan soal. Jawab dari HP ini.</p>
+<div id="studentQuestion"></div>
+<button onclick="closeMulti()">Tutup</button>
+</div>
+</div></div>
+
+<div class="modal" id="shareModal">
+  <div class="modalbox">
+    <div style="font-size:45px">📱🏍️</div>
+    <h2>Bagikan Game ke Siswa</h2>
+    <p class="small">Setelah game di-hosting di internet, siswa cukup scan QR ini menggunakan kamera HP.</p>
+    <input id="shareUrl" placeholder="https://alamat-game-anda..." oninput="updateQR()">
+    <div style="background:white;padding:14px;border-radius:14px;width:230px;height:230px;margin:15px auto;display:flex;align-items:center;justify-content:center">
+      <img id="qr" alt="QR Code" style="width:200px;height:200px;object-fit:contain">
+    </div>
+    <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+      <button class="gold" onclick="copyGameLink()">📋 Salin Link</button>
+      <button onclick="closeShare()">Tutup</button>
+    </div>
+    <p class="small" style="margin-top:14px">Jika file masih dibuka dari komputer sebagai <b>file://</b>, QR belum bisa dipakai siswa. Upload game terlebih dahulu ke hosting gratis.</p>
+  </div>
+</div>
+
+<div class="modal" id="modal"><div class="modalbox" id="modalbox"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+const defaultQs=[
+{type:'pg',text:'Apa manfaat bekerja sama dalam kelompok?',opts:['Bekerja sendiri','Saling membantu mencapai tujuan','Menghindari tugas','Menunggu teman'],correct:'B',score:10,steps:2,kind:'normal'},
+{type:'pg',text:'Sikap yang baik ketika teman berbeda pendapat adalah...',opts:['Mengejek','Memaksa','Mendengarkan dan menghargai','Meninggalkan kelompok'],correct:'C',score:10,steps:2,kind:'normal'},
+{type:'essay',text:'Jelaskan mengapa kerja sama penting dalam pembelajaran.',key:'Menyebutkan saling membantu, pembagian tugas, tanggung jawab, dan tujuan bersama.',score:10,steps:3,kind:'challenge'},
+{type:'pg',text:'Apa yang terjadi jika kelompok mendapat soal bonus?',opts:['Motor mundur','Mendapat langkah tambahan','Game selesai','Poin menjadi nol'],correct:'B',score:10,steps:2,kind:'bonus'}
+];
+let qs=JSON.parse(localStorage.getItem('motocross_qs')||'null')||defaultQs;
+let teams=JSON.parse(localStorage.getItem('motocross_teams')||'null')||[
+{name:'Kelompok 1',steps:0,points:0,color:'#ff535e',num:1},{name:'Kelompok 2',steps:0,points:0,color:'#36a7ff',num:2},
+{name:'Kelompok 3',steps:0,points:0,color:'#45d487',num:3},{name:'Kelompok 4',steps:0,points:0,color:'#bd70ff',num:4},{name:'Kelompok 5',steps:0,points:0,color:'#ffad32',num:5}];
+let cfg=JSON.parse(localStorage.getItem('motocross_cfg')||'null')||{rounds:12,time:25,finish:20,random:true};
+let selected=0,round=0,current=null,timer=null,locked=false,finished=false;
+const $=id=>document.getElementById(id);
+function persist(){localStorage.setItem('motocross_qs',JSON.stringify(qs));localStorage.setItem('motocross_teams',JSON.stringify(teams));localStorage.setItem('motocross_cfg',JSON.stringify(cfg))}
+function show(id,btn){document.querySelectorAll('.screen').forEach(x=>x.classList.remove('active'));$(id).classList.add('active');document.querySelectorAll('nav button').forEach(x=>x.classList.remove('active'));btn.classList.add('active')}
+function render(){
+$('lanes').innerHTML=teams.map((t,i)=>`<div class="lane">
+<div class="label">${t.name} • 🏍️ CROSS ${t.num}</div><div class="flag">🏁</div>
+<div class="mud" style="left:32%"></div><div class="mud" style="left:68%"></div>
+<div class="ramp" style="left:45%">⛰️</div><div class="hazard" style="left:57%">🪨</div>
+<div class="hazard" style="left:79%">🪵</div><div class="finish"></div>
+<div class="bike" id="bike${i}" style="--bike:${t.color};left:${Math.min(88,t.steps/cfg.finish*88)}%">
+<div class="wheel w1"></div><div class="wheel w2"></div><div class="seat"></div><div class="front"></div><div class="rider">🧑</div><span class="number">${t.num}</span><span class="dust">💨</span>
+</div></div>`).join('');
+let sorted=teams.map((t,i)=>({...t,i})).sort((a,b)=>b.steps-a.steps||b.points-a.points);
+$('board').innerHTML=sorted.map((t,r)=>`<tr><td>${['🥇','🥈','🥉','4️⃣','5️⃣'][r]}</td><td>${t.name}</td><td class="pts">${t.steps}</td><td>${t.points}</td></tr>`).join('');
+$('controls').innerHTML=teams.map((t,i)=>`<button class="teambtn ${selected===i?'sel':''}" onclick="selectTeam(${i})">🏍️ ${t.name}</button>`).join('');
+$('round').textContent=`${round} / ${cfg.rounds}`;
+$('checkpoint').textContent=`${Math.min(5,Math.floor(teams[selected].steps/cfg.finish*5))} / 5`;
+}
+function selectTeam(i){selected=i;render();$('question').innerHTML=`<span class="small">Kelompok aktif:</span><h3>${teams[i].name}</h3><button class="gold" onclick="startRound()">▶ MULAI RONDE</button>`}
+function choose(){return cfg.random?qs[Math.floor(Math.random()*qs.length)]:qs[round%qs.length]}
+function startRound(){
+if(finished)return;if(!qs.length){toast('Tambahkan soal dulu.');return}if(round>=cfg.rounds){finishGame();return}
+locked=false;current=choose();round++;render();
+if(current.type==='pg')showPG();else showEssay();
+if(teacherMode)startMultiplayerRound();
+}
+function showPG(){
+let left=cfg.time;
+$('question').innerHTML=`<span class="badge">PILIHAN GANDA</span><span class="timer" id="timer">${left}s</span><div class="qtitle">${current.text}</div><div class="options">${current.opts.map((o,i)=>`<button class="option" onclick="answer('${'ABCD'[i]}')"><b>${'ABCD'[i]}.</b> ${o}</button>`).join('')}</div>`;
+clearInterval(timer);timer=setInterval(()=>{left--;if($('timer'))$('timer').textContent=left+'s';if(left<=0){clearInterval(timer);answer('TIME')}},1000);
+}
+function showEssay(){
+$('question').innerHTML=`<span class="badge">📝 ESAI</span><div class="qtitle">${current.text}</div><textarea id="ans" placeholder="Tulis jawaban kelompok..."></textarea><button class="gold" style="margin-top:8px" onclick="grade()">KIRIM JAWABAN</button>`;
+}
+function answer(letter){
+if(locked)return;locked=true;clearInterval(timer);
+if(letter===current.correct) reward(current.steps,current.score,current.kind==='bonus');
+else wrong(letter==='TIME'?'⏱️ Waktu habis!':'❌ Jawaban belum tepat.');
+}
+function grade(){
+if(locked)return;let ans=$('ans').value.trim();if(!ans){toast('Jawaban belum diisi.');return}
+let max=current.score,n=Number(prompt(`Masukkan skor ${teams[selected].name} (0-${max})`,max));if(isNaN(n))return;n=Math.max(0,Math.min(max,n));locked=true;
+let steps=n>=10?3:n>=7?2:n>=4?1:0;reward(steps,n,false);
+}
+function reward(steps,points,bonus){
+let extra=bonus?2:0,total=steps+extra;teams[selected].steps=Math.min(cfg.finish,teams[selected].steps+total);teams[selected].points+=points+extra*5;persist();render();
+$('question').innerHTML=`<div class="good" style="font-size:25px;font-weight:1000">🎉 JAWABAN BENAR!</div><p>🏍️ Motor ${teams[selected].name} maju <b>+${total} langkah</b>.</p><button onclick="continueGame()">LANJUT</button>`;
+let bike=$('bike'+selected);bike.classList.add('moving');setTimeout(()=>bike.classList.remove('moving'),850);
+if(teams[selected].steps>=cfg.finish){finishGame();return}
+}
+function wrong(msg){$('question').innerHTML=`<div class="bad" style="font-size:24px;font-weight:1000">${msg}</div><p>Motor tetap di posisi sekarang.</p><button onclick="continueGame()">LANJUT</button>`}
+function continueGame(){if(round>=cfg.rounds||teams.some(t=>t.steps>=cfg.finish))finishGame();else $('question').innerHTML=`<span class="small">Siap untuk ronde berikutnya.</span><br><button class="gold" onclick="startRound()">▶ MULAI RONDE</button>`}
+function finishGame(){
+clearInterval(timer);finished=true;let s=[...teams].sort((a,b)=>b.steps-a.steps||b.points-a.points);
+$('modalbox').innerHTML=`<div style="font-size:50px">🏆🎉🏁</div><h2>BALAPAN SELESAI!</h2><p style="font-size:21px">🥇 <b>${s[0].name}</b><br>🥈 ${s[1].name}<br>🥉 ${s[2].name}</p><p>Hebat! Kalian sudah belajar, bekerja sama, dan berjuang sampai garis finish!</p><button class="gold" onclick="closeModal()">TUTUP</button>`;$('modal').classList.add('show')}
+function closeModal(){$('modal').classList.remove('show')}
+function resetGame(){if(!confirm('Reset semua skor dan posisi motor?'))return;teams.forEach(t=>{t.steps=0;t.points=0});round=0;selected=0;finished=false;persist();render();selectTeam(0)}
+function typeChange(){let e=$('type').value==='essay';$('pg').style.display=e?'none':'block';$('essay').style.display=e?'block':'none'}
+function addQuestion(){
+let type=$('type').value,text=$('text').value.trim();if(!text){toast('Pertanyaan belum diisi.');return}
+let q={type,text,score:Number($('score').value),steps:Number($('steps').value),kind:$('kind').value};
+if(type==='pg'){q.opts=[$('a').value,$('b').value,$('c').value,$('d').value];q.correct=$('correct').value;if(q.opts.some(x=>!x.trim())){toast('Lengkapi A-D.');return}}
+else q.key=$('key').value;
+qs.push(q);persist();renderQs();['text','a','b','c','d','key'].forEach(x=>$(x).value='');toast('Soal tersimpan.')}
+function renderQs(){$('qList').innerHTML=qs.map((q,i)=>`<div class="card"><div><span class="badge">${q.type==='pg'?'PG':'ESAI'}</span> <span class="badge">${q.kind}</span><div style="margin-top:6px">${q.text}</div></div><button style="background:#6b2735;color:#fff" onclick="delQ(${i})">Hapus</button></div>`).join('')}
+function delQ(i){if(confirm('Hapus soal?')){qs.splice(i,1);persist();renderQs()}}
+function renderSettings(){$('settingsForm').innerHTML=teams.map((t,i)=>`<div class="field"><label>Nama Kelompok ${i+1}</label><input id="tn${i}" value="${t.name}"></div>`).join('')+
+`<div class="field"><label>Jumlah Ronde</label><input id="rounds" type="number" value="${cfg.rounds}"></div><div class="field"><label>Waktu PG (detik)</label><input id="time" type="number" value="${cfg.time}"></div><div class="field"><label>Jarak Finish</label><input id="finish" type="number" value="${cfg.finish}"></div><div class="field"><label>Soal Acak</label><select id="random"><option value="1" ${cfg.random?'selected':''}>Ya</option><option value="0" ${!cfg.random?'selected':''}>Tidak</option></select></div>`}
+function saveSettings(){teams.forEach((t,i)=>t.name=$('tn'+i).value||`Kelompok ${i+1}`);cfg.rounds=Number($('rounds').value);cfg.time=Number($('time').value);cfg.finish=Number($('finish').value);cfg.random=$('random').value==='1';persist();render();toast('Pengaturan disimpan.')}
+
+
+let peer=null, teacherMode=false, studentMode=false, teacherConn=null, studentConnections=[], roomId='', myTeam=0;
+let answeredTeams=new Set(), occupiedTeams=new Map(), essayQueue=[];
+
+function openMultiplayer(){ $('multiModal').classList.add('show'); }
+function closeMulti(){ $('multiModal').classList.remove('show'); }
+function makeCode(){ return Math.random().toString(36).substring(2,8).toUpperCase(); }
+function safeName(s){return String(s||'').replace(/[<>]/g,'').trim().slice(0,40);}
+function publicQuestion(q){
+  if(!q)return null;
+  return {type:q.type,text:q.text,opts:q.opts||[],score:q.score||0,steps:q.steps||0,kind:q.kind||'normal'};
+}
+function roomUrl(code){return location.origin+location.pathname+'?room='+encodeURIComponent(code);}
+function setConnectionStatus(t,ok=false){
+  const el=$('connectedStudents');
+  if(el) el.innerHTML=(ok?'🟢 ':'🔴 ')+t;
+}
+function updateConnected(){
+  const live=studentConnections.filter(c=>c && c.open);
+  const names=live.map(c=>`${c.studentName||'Siswa'} — ${teams[c.team]?.name||'?'}`);
+  $('connectedStudents').innerHTML=`<b>Terhubung: ${live.length} / 5 HP</b>`+(names.length?'<div class="small" style="margin-top:8px">'+names.map(n=>'• '+n).join('<br>')+'</div>':'');
+}
+function createRoom(){
+  if(peer){try{peer.destroy()}catch(e){}}
+  teacherMode=true;studentMode=false;studentConnections=[];occupiedTeams.clear();answeredTeams.clear();essayQueue=[];
+  roomId=makeCode();
+  peer=new Peer('BJK-'+roomId,{debug:1});
+  $('multiStart').style.display='none';$('studentJoin').style.display='none';$('studentRoom').style.display='none';$('teacherRoom').style.display='block';
+  $('roomCode').textContent=roomId;
+  $('roomQR').src='https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='+encodeURIComponent(roomUrl(roomId));
+  $('roomLink').value=roomUrl(roomId);
+  setConnectionStatus('Membuat room...',false);
+  peer.on('open',()=>{setConnectionStatus('Room aktif — menunggu siswa',true);updateConnected();});
+  peer.on('connection',conn=>{
+    conn.on('open',()=>{
+      conn.on('data',data=>teacherReceive(data,conn));
+      conn.on('close',()=>removeStudent(conn));
+      conn.on('error',()=>removeStudent(conn));
+      conn.send({type:'welcome',teams, cfg, round, question:publicQuestion(current)});
+    });
+    studentConnections.push(conn);
+    updateConnected();
+  });
+  peer.on('error',e=>{console.error(e);setConnectionStatus('Room bermasalah: '+(e.type||'koneksi error'),false);});
+  window.onbeforeunload=()=>teacherMode?'Room akan terputus jika halaman guru ditutup/direfresh.':undefined;
+}
+function removeStudent(conn){
+  const idx=studentConnections.indexOf(conn); if(idx>=0)studentConnections.splice(idx,1);
+  if(conn.team!==undefined && occupiedTeams.get(conn.team)===conn)occupiedTeams.delete(conn.team);
+  updateConnected();
+  broadcast({type:'teamAvailability',occupied:[...occupiedTeams.keys()]});
+}
+function teacherReceive(data,conn){
+  if(!data || !conn)return;
+  if(data.type==='join'){
+    const team=Number(data.team);
+    if(!Number.isInteger(team)||team<0||team>4){conn.send({type:'joinDenied',reason:'Kelompok tidak valid.'});return;}
+    if(occupiedTeams.has(team) && occupiedTeams.get(team)!==conn){conn.send({type:'joinDenied',reason:'Kelompok itu sudah dipakai HP lain. Pilih kelompok lain.'});return;}
+    if(studentConnections.filter(c=>c.open).length>5){conn.send({type:'joinDenied',reason:'Room sudah penuh (maksimal 5 HP).'});return;}
+    conn.team=team; conn.studentName=safeName(data.name)||('Siswa Kelompok '+(team+1));
+    occupiedTeams.set(team,conn);
+    conn.send({type:'joinAccepted',team,teams,cfg,round,question:publicQuestion(current),occupied:[...occupiedTeams.keys()]});
+    broadcast({type:'teamAvailability',occupied:[...occupiedTeams.keys()]});
+    updateConnected();
+    return;
+  }
+  if(conn.team===undefined)return;
+  if(data.type==='answer'){
+    if(!current || current.type!=='pg' || Number(data.team)!==conn.team)return;
+    if(answeredTeams.has(conn.team))return;
+    answeredTeams.add(conn.team);
+    const ok=String(data.answer).toUpperCase()===String(current.correct).toUpperCase();
+    if(ok) teacherAward(conn.team,current.steps,current.score,current.kind==='bonus');
+    else teacherWrong(conn.team,'❌ Jawaban belum tepat.');
+  }
+  if(data.type==='essay'){
+    if(!current || current.type!=='essay' || Number(data.team)!==conn.team || answeredTeams.has(conn.team))return;
+    answeredTeams.add(conn.team);
+    essayQueue.push({conn,team:conn.team,name:conn.studentName,answer:String(data.answer||'').slice(0,2000),max:current.score||10,key:current.key||''});
+    showEssayForTeacher(essayQueue[essayQueue.length-1]);
+  }
+}
+function broadcast(msg){studentConnections.filter(c=>c && c.open).forEach(c=>{try{c.send(msg)}catch(e){}})}
+function startMultiplayerRound(){
+  if(!teacherMode||!current)return;
+  answeredTeams.clear();
+  broadcast({type:'question',question:publicQuestion(current),round});
+}
+function teacherAward(team,steps,points,bonus){
+  let extra=bonus?2:0,total=Number(steps||0)+extra;
+  teams[team].steps=Math.min(cfg.finish,teams[team].steps+total);
+  teams[team].points+=Number(points||0)+extra*5;
+  persist();render();
+  broadcast({type:'result',team,correct:true,total,points:Number(points||0)+extra*5,teams,round});
+  if(teams[team].steps>=cfg.finish)finishGame();
+}
+function teacherWrong(team,msg='❌ Belum tepat.'){broadcast({type:'result',team,correct:false,total:0,points:0,teams,round,message:msg});}
+function showEssayForTeacher(item){
+  const box=$('question');
+  box.innerHTML=`<span class="badge">📝 ESAI MASUK</span><h3>${item.name} — ${teams[item.team].name}</h3><div class="card" style="display:block;white-space:pre-wrap;text-align:left;margin:10px 0">${escapeHtml(item.answer)}</div><div class="small">Kunci/pedoman: ${escapeHtml(item.key||'Tidak diisi')}</div><div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:12px"><input id="essayScore" type="number" min="0" max="${item.max}" value="${item.max}" style="max-width:140px"><button class="gold" onclick="gradeRemoteEssay(0)">NILAI & KIRIM</button></div>`;
+  box.dataset.essayTeam=String(item.team);
+  box.dataset.essayMax=String(item.max);
+}
+function gradeRemoteEssay(){
+  const team=Number($('question').dataset.essayTeam), max=Number($('question').dataset.essayMax), n=Number($('essayScore').value);
+  if(!Number.isFinite(n)||n<0||n>max){toast('Nilai harus antara 0 dan '+max);return}
+  const item=essayQueue.shift();
+  const steps=n>=10?3:n>=7?2:n>=4?1:0;
+  teacherAward(team,steps,n,false);
+  if(item&&item.conn&&item.conn.open)item.conn.send({type:'essayResult',score:n,steps,teams,round});
+  $('question').innerHTML='<span class="small">Nilai esai terkirim. Pilih kelompok dan mulai ronde berikutnya.</span>';
+}
+function escapeHtml(s){return String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
+function showJoin(){
+  $('multiStart').style.display='none';$('teacherRoom').style.display='none';$('studentJoin').style.display='block';$('studentRoom').style.display='none';
+  const r=new URL(location.href).searchParams.get('room');if(r)$('joinCode').value=r.toUpperCase();
+}
+function joinRoom(){
+  const code=$('joinCode').value.trim().toUpperCase();
+  const name=safeName($('studentName').value);
+  if(code.length!==6){$('joinStatus').textContent='❌ Kode ROOM harus 6 karakter.';return}
+  if(!name){$('joinStatus').textContent='❌ Isi nama siswa/kelompok.';return}
+  myTeam=Number($('joinTeam').value); studentMode=true;teacherMode=false;
+  if(peer){try{peer.destroy()}catch(e){}}
+  peer=new Peer(undefined,{debug:1});
+  $('joinStatus').textContent='⏳ Menghubungkan ke guru...';
+  peer.on('open',()=>{
+    teacherConn=peer.connect('BJK-'+code,{reliable:true});
+    teacherConn.on('open',()=>teacherConn.send({type:'join',team:myTeam,name}));
+    teacherConn.on('data',studentReceive);
+    teacherConn.on('close',()=>{$('studentWelcome').textContent='⚠️ Koneksi guru terputus. Minta guru cek room.';$('joinStatus').textContent='Koneksi terputus.';});
+    teacherConn.on('error',()=>{$('joinStatus').textContent='❌ Koneksi error.';});
+  });
+  peer.on('error',e=>{$('joinStatus').textContent='❌ Tidak dapat terhubung: '+(e.type||'periksa kode ROOM dan internet.');});
+}
+function studentReceive(data){
+  if(!data)return;
+  if(data.type==='joinDenied'){$('joinStatus').textContent='❌ '+data.reason;return;}
+  if(data.type==='joinAccepted'){
+    myTeam=data.team;teams=data.teams||teams;cfg=data.cfg||cfg;
+    $('studentJoin').style.display='none';$('studentRoom').style.display='block';
+    $('studentWelcome').textContent='🏍️ '+teams[myTeam].name+' — '+safeName($('studentName').value);
+    $('joinStatus').textContent='';render();showStudentQuestion(data.question);
+  }
+  if(data.type==='welcome'){teams=data.teams||teams;cfg=data.cfg||cfg;render();}
+  if(data.type==='question'){round=Number(data.round||round);showStudentQuestion(data.question);}
+  if(data.type==='result'){
+    teams=data.teams||teams;render();
+    if(Number(data.team)===myTeam)$('studentQuestion').innerHTML=data.correct?`<div class="good" style="font-size:25px;font-weight:900">🎉 BENAR! Motor maju +${data.total} langkah.</div>`:`<div class="bad" style="font-size:22px;font-weight:900">${escapeHtml(data.message||'❌ Belum tepat. Motor tidak bergerak.')}</div>`;
+  }
+  if(data.type==='essayResult' && Number(data.round)===round){teams=data.teams||teams;render();$('studentQuestion').innerHTML=`<div class="good"><b>📝 Esai dinilai: ${data.score}</b><br>Motor maju +${data.steps} langkah.</div>`;}
+}
+function showStudentQuestion(q){
+  if(!q){$('studentQuestion').innerHTML='<p class="small">Tunggu guru memulai ronde.</p>';return}
+  if(q.type==='pg'){
+    $('studentQuestion').innerHTML='<div class="badge">PILIHAN GANDA</div><div class="qtitle" style="margin-top:10px">'+escapeHtml(q.text)+'</div><div class="options">'+q.opts.map((o,i)=>'<button class="option" onclick="studentAnswer(\''+'ABCD'[i]+'\')"><b>'+'ABCD'[i]+'.</b> '+escapeHtml(o)+'</button>').join('')+'</div>';
+  }else{
+    $('studentQuestion').innerHTML='<div class="badge">📝 ESAI</div><div class="qtitle" style="margin-top:10px">'+escapeHtml(q.text)+'</div><textarea id="studentEssay" placeholder="Tulis jawaban kelompok..."></textarea><button class="gold" onclick="studentEssaySend()">KIRIM JAWABAN</button>';
+  }
+}
+function studentAnswer(letter){if(teacherConn&&teacherConn.open){teacherConn.send({type:'answer',team:myTeam,answer:letter});$('studentQuestion').innerHTML='<p class="small">⏳ Jawaban terkirim. Tunggu hasil...</p>';}}
+function studentEssaySend(){const ans=$('studentEssay')?.value.trim();if(!ans)return;if(teacherConn&&teacherConn.open){teacherConn.send({type:'essay',team:myTeam,answer:ans});$('studentQuestion').innerHTML='<p class="small">⏳ Jawaban esai terkirim. Tunggu penilaian guru.</p>';}}
+function copyRoomLink(){const u=$('roomLink').value; navigator.clipboard?.writeText(u).then(()=>toast('Link room disalin.')).catch(()=>toast('Salin link secara manual.'));}
+function leaveRoom(){if(peer){try{peer.destroy()}catch(e){}}peer=null;teacherMode=false;studentMode=false;teacherConn=null;studentConnections=[];occupiedTeams.clear();window.onbeforeunload=null;$('multiStart').style.display='block';$('teacherRoom').style.display='none';$('studentJoin').style.display='none';$('studentRoom').style.display='none';}
+
+function shareGame(){
+  $('shareModal').classList.add('show');
+  const url=location.protocol==='http:'||location.protocol==='https:'?location.href:'';
+  $('shareUrl').value=url; updateQR();
+}
+function updateQR(){const u=$('shareUrl').value.trim();$('qr').src=u?'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data='+encodeURIComponent(u):'';}
+function copyGameLink(){const u=$('shareUrl').value.trim();if(!u){toast('Masukkan link game terlebih dahulu.');return}navigator.clipboard?.writeText(u).then(()=>toast('Link game berhasil disalin.')).catch(()=>toast('Salin link secara manual.'));}
+function closeShare(){$('shareModal').classList.remove('show')}
+
+function toast(t){$('toast').textContent=t;$('toast').classList.add('show');setTimeout(()=>$('toast').classList.remove('show'),2200)}
+render();renderQs();renderSettings();selectTeam(0);
+
+// Jika siswa membuka QR room, langsung tampilkan form masuk.
+const initialRoom=new URL(location.href).searchParams.get('room');
+if(initialRoom){setTimeout(()=>showJoin(),200);}
+
+</script>
+</body>
+</html>
